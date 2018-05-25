@@ -1,0 +1,38 @@
+#!/bin/bash
+
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+PROGNAME=$0
+
+set -eu
+set -o pipefail
+
+shift $((OPTIND-1))
+
+if [[ $# -ne 2 ]]; then
+    acu_die "usage: $PROGNAME <cluster-dir> <inventory-script>"
+fi
+
+export ACU_CLUSTER_DIR=$1; shift
+export ACU_INVENTORY_SCRIPT=$1; shift
+
+if [[ ! -d "$ACU_CLUSTER_DIR" ]]; then
+    acu_die "directory '$ACU_CLUSTER_DIR' does not exist!"
+fi
+
+if [[ ! -f "$ACU_INVENTORY_SCRIPT" ]]; then
+    acu_die "$ACU_INVENTORY_SCRIPT does not exist!"
+fi
+
+if [[ ! -x "$ACU_INVENTORY_SCRIPT" ]]; then
+    acu_die "$ACU_INVENTORY_SCRIPT is not executable!"
+fi
+
+set -a				# export these variables
+ACU_INVENTORY_MASTER_IP=$(acu_get_public_ip "master" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+ACU_INVENTORY_INFRA_IP=$(acu_get_public_ip "infra" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+ACU_INVENTORY_NODE_IP=$(acu_get_public_ip "node" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+set +a
+
+${ACU_INVENTORY_SCRIPT}

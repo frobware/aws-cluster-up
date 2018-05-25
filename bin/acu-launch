@@ -1,0 +1,47 @@
+#!/bin/bash
+
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+set -eu
+set -o pipefail
+
+apply=0
+
+while getopts "h?a" opt; do
+    case "$opt" in
+	a) apply=1;;
+    esac
+done
+
+PROGNAME=$0
+shift $((OPTIND-1))
+
+if [[ $# -ne 2 ]]; then
+    acu_die "usage: $PROGNAME <cluster-dir> <terraform-script>"
+fi
+
+export ACU_CLUSTER_DIR=$1; shift
+export ACU_TERRAFORM_SCRIPT=$1; shift
+
+if [[ -d "$ACU_CLUSTER_DIR" ]]; then
+    acu_die "directory '$ACU_CLUSTER_DIR' already exists!"
+fi
+
+if [[ ! -f "$ACU_TERRAFORM_SCRIPT" ]]; then
+    acu_die "$ACU_TERRAFORM_SCRIPT does not exist!"
+fi
+
+if [[ ! -x "$ACU_TERRAFORM_SCRIPT" ]]; then
+    acu_die "$ACU_TERRAFORM_SCRIPT is not executable!"
+fi
+
+mkdir -p $ACU_CLUSTER_DIR/{terraform,inventory}
+${ACU_TERRAFORM_SCRIPT:?} > $ACU_CLUSTER_DIR/terraform/cluster.tf
+cd $ACU_CLUSTER_DIR/terraform
+terraform init
+terraform plan -out=plan
+if [[ $apply -eq 1 ]]; then
+     terraform apply ${ACU_TERRAFORM_AUTO_APPROVE:--auto-approve} plan
+     terraform refresh
+fi

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+set -eu
+set -o pipefail
+
+apply=0
+
+while getopts "h?a" opt; do
+    case "$opt" in
+	a) apply=1;;
+    esac
+done
+
+PROGNAME=$0
+shift $((OPTIND-1))
+
+if [[ $# -ne 1 ]]; then
+    acu_die "usage: $PROGNAME <cluster-dir>"
+fi
+
+export ACU_CLUSTER_DIR=$1; shift
+
+if [[ ! -d "$ACU_CLUSTER_DIR" ]]; then
+    acu_die "directory '$ACU_CLUSTER_DIR' does not exist!"
+fi
+
+for i in master infra node; do
+    id=$(acu_get_instance_id "$i" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+    cluster_name=$(basename $ACU_CLUSTER_DIR)
+    aws ec2 create-tags --resources "$id" --tags Key=Name,Value="$cluster_name-${i}-terminate"
+done
+
+(cd $ACU_CLUSTER_DIR/terraform;
+ [[ $apply -eq 1 ]] && terraform destroy ${ACU_TERRAFORM_AUTO_APPROVE:--auto-approve})

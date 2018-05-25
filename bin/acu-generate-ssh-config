@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+shift $((OPTIND-1))
+
+if [[ $# -ne 1 ]]; then
+    echo "usage: $PROGNAME <cluster-dir>"
+    exit 1
+fi
+
+ACU_CLUSTER_DIR=$1; shift
+
+if [[ ! -d "$ACU_CLUSTER_DIR" ]]; then
+    acu_die "directory '$ACU_CLUSTER_DIR' does not exist!"
+fi
+
+for i in master infra node; do
+    ip=$(acu_get_public_ip "$i" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+cat <<EOF
+Host $(basename ${ACU_CLUSTER_DIR})-${i} $ip
+  Hostname $ip
+  ControlPersist 10m
+  ControlMaster auto
+  ControlPath /tmp/%r@%h:%p
+  User ${ANSIBLE_SSH_USER:-ec2-user}
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  UserKnownHostsFile ~/.ssh/aws_known_hosts
+  IdentityFile ~/.ssh/libra.pem
+  IdentitiesOnly yes
+  Compression yes
+EOF
+done

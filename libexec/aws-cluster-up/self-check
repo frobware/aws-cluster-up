@@ -1,0 +1,8 @@
+die_missing_dep() {
+    echo "fatal error: missing dependency: please install $1"
+    exit 1
+}
+
+type -P aws 2>&1 >/dev/null || die_missing_dep "aws-cli(1)"
+type -P jq 2>&1 >/dev/null || die_missing_dep "jq(1)"
+type -P terraform 2>&1 >/dev/null || die_missing_dep "terraform(1)"
