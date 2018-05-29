@@ -54,11 +54,11 @@ The example terraform cluster definitions and inventory files are just
 examples. You can copy these and modify them to support a different
 set of configurations.
 
-	cp $PWD/examples/ocp3.10/single-master.tf my-cluster.tf
+	cp $PWD/share/examples/ocp3.10/single-master.tf my-cluster.tf
 	# Make modificiations to my-cluster.tf
 	acu-launch ~/amcdermo-demo /path/to/my-cluster.tf
 
-	cp $PWD/examples/ocp3.10/single-master.inventory
+	cp $PWD/share/examples/ocp3.10/single-master.inventory
 	# Make modificiations to my-cluster.inventory
 	acu-generate-inventory ~/amcdermo-demo /path/to/my-cluster.inventory
 
