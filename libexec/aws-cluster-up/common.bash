@@ -23,6 +23,10 @@ acu_get_instance_id() {
     acu_get_resource_attribute "$1" "id" $2
 }
 
+acu_get_instances() {
+    echo $(jq -r -c ".modules[].resources | keys[]" $1)
+}
+
 acu_terraform_state_file() {
     echo $ACU_CLUSTER_DIR/terraform/terraform.tfstate
 }
