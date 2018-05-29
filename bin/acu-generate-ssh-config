@@ -19,10 +19,10 @@ if [[ ! -d "$ACU_CLUSTER_DIR" ]]; then
     acu_die "directory '$ACU_CLUSTER_DIR' does not exist!"
 fi
 
-for i in master infra node; do
+for i in $(acu_get_instances $ACU_CLUSTER_DIR/terraform/terraform.tfstate); do
     ip=$(acu_get_public_ip "$i" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
 cat <<EOF
-Host $(basename ${ACU_CLUSTER_DIR})-${i} $ip
+Host $(basename ${ACU_CLUSTER_DIR})-${i/aws_instance./} $ip
   Hostname $ip
   ControlPersist 10m
   ControlMaster auto
