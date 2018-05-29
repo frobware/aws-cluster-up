@@ -22,10 +22,6 @@ if [[ ! -f "$ACU_INVENTORY_SCRIPT" ]]; then
     acu_die "$ACU_INVENTORY_SCRIPT does not exist!"
 fi
 
-if [[ ! -x "$ACU_INVENTORY_SCRIPT" ]]; then
-    acu_die "$ACU_INVENTORY_SCRIPT is not executable!"
-fi
-
 declare -A ACU_INVENTORY_INSTANCE_IP
 
 for i in $(acu_get_instances "$ACU_CLUSTER_DIR/terraform/terraform.tfstate"); do
