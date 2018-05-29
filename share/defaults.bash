@@ -1,7 +1,5 @@
 set -a
 
-: ${ACU_CLUSTER_NAME:=$(basename ${ACU_CLUSTER_DIR:?})}
-
 : ${AWS_ACCESS_KEY:?}		# ensure these are set
 : ${AWS_SECRET_KEY:?}		# ensure these are set
 

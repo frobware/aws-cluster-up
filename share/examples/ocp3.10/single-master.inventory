@@ -1,14 +1,14 @@
 #!/bin/bash
 
-set -eu
+set -u
 
 source $ACU_SHARE_DIR/defaults.bash
 
 cat <<EOF
 [OSEv3:children]
 masters
-nodes
 etcd
+nodes
 
 [OSEv3:vars]
 ansible_ssh_user=${ANSIBLE_SSH_USER:-ec2-user}
@@ -38,16 +38,17 @@ openshift_clusterid=$ACU_CLUSTER_NAME
 
 openshift_additional_repos=[{'id': 'ose', 'name': 'ose', 'baseurl': 'https://mirror.openshift.com/enterprise/all/3.10/latest/RH7-RHAOS-3.10/x86_64/os/', 'enabled': 1, 'gpgcheck': 0, 'sslclientcert': '/var/lib/yum/client-cert.pem', 'sslclientkey': '/var/lib/yum/client-key.pem', 'sslverify': 0}]
 
+openshift_master_bootstrap_enabled=true
 openshift_master_bootstrap_auto_approve=true
 
-[etcd]
-$ACU_INVENTORY_MASTER_IP
-
 [masters]
-$ACU_INVENTORY_MASTER_IP
+${ACU_INVENTORY_INSTANCE_IP[master]}
+
+[etcd]
+${ACU_INVENTORY_INSTANCE_IP[master]}
 
 [nodes]
-$ACU_INVENTORY_MASTER_IP openshift_node_group_name=node-config-master openshift_node_labels="{}"
-$ACU_INVENTORY_INFRA_IP openshift_node_group_name=node-config-infra openshift_node_labels="{'region':'infra'}"
-$ACU_INVENTORY_NODE_IP openshift_node_group_name=node-config-compute openshift_node_labels="{}"
+${ACU_INVENTORY_INSTANCE_IP[master]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_IP[infra]} openshift_node_group_name=node-config-infra
+${ACU_INVENTORY_INSTANCE_IP[node]} openshift_node_group_name=node-config-compute
 EOF

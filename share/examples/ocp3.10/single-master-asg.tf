@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -eu
+# Infrastructure that will be Auto Scale Group aware.
+
+set -u
 
 source ${ACU_SHARE_DIR:?}/defaults.bash
 
@@ -16,35 +18,23 @@ resource "aws_instance" "master" {
   instance_type = "$ACU_INSTANCE_TYPE"
   key_name = "$ACU_KEY_NAME"
   subnet_id = "$ACU_SUBNET_ID"
-  tags {
-    Name = "$ACU_CLUSTER_NAME-master"
-    "kubernetes.io/cluster/${ACU_CLUSTER_NAME}" = "true"
-  }
 }
 
 resource "aws_instance" "infra" {
   ami = "$ACU_AMI_IMAGE_INFRA"
   associate_public_ip_address = true
-  iam_instance_profile = "$ACU_IAM_INSTANCE_PROFILE_INFRA"
+  iam_instance_profile = "aos-pod-cluster-autoscaler-minimal"
   instance_type = "$ACU_INSTANCE_TYPE"
   key_name = "$ACU_KEY_NAME"
   subnet_id = "$ACU_SUBNET_ID"
-  tags {
-    Name = "$ACU_CLUSTER_NAME-infra"
-    "kubernetes.io/cluster/${ACU_CLUSTER_NAME}" = "true"
-  }
 }
 
 resource "aws_instance" "node" {
-  ami = "$ACU_AMI_IMAGE_NODE"
+  ami = "ami-083d1a2a697915450"
   associate_public_ip_address = true
   iam_instance_profile = "$ACU_IAM_INSTANCE_PROFILE_NODE"
   instance_type = "$ACU_INSTANCE_TYPE"
   key_name = "$ACU_KEY_NAME"
   subnet_id = "$ACU_SUBNET_ID"
-  tags {
-    Name = "$ACU_CLUSTER_NAME-node"
-    "kubernetes.io/cluster/${ACU_CLUSTER_NAME}" = "true"
-  }
 }
 EOF

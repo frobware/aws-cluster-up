@@ -3,27 +3,29 @@
 set -eu
 set -o pipefail
 
+PROGNAME=$(basename $0)
 ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
 source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
-
-shift $((OPTIND-1))
 
 if [[ $# -ne 1 ]]; then
     echo "usage: $PROGNAME <cluster-dir>"
     exit 1
 fi
 
-ACU_CLUSTER_DIR=$1; shift
+cluster_dir=$1; shift
 
-if [[ ! -d "$ACU_CLUSTER_DIR" ]]; then
-    acu_die "directory '$ACU_CLUSTER_DIR' does not exist!"
+if [[ ! -d "$cluster_dir" ]]; then
+    acu_die "directory '$cluster_dir' does not exist!"
 fi
 
-for i in $(acu_get_instances $ACU_CLUSTER_DIR/terraform/terraform.tfstate); do
-    ip=$(acu_get_public_ip "$i" $ACU_CLUSTER_DIR/terraform/terraform.tfstate)
+cluster_name=$(basename $cluster_dir)
+
+for i in $(acu_get_instances "$cluster_dir/terraform/terraform.tfstate"); do
+    public_ip=$(acu_get_resource_attribute "$i" "public_ip" "$cluster_dir/terraform/terraform.tfstate")
+    private_dns=$(acu_get_resource_attribute "$i" "private_dns" "$cluster_dir/terraform/terraform.tfstate")
 cat <<EOF
-Host $(basename ${ACU_CLUSTER_DIR})-${i/aws_instance./} $ip
-  Hostname $ip
+Host ${cluster_name}-$(acu_aws_instance_nodename "$i") $public_ip # $private_dns
+  Hostname $public_ip
   ControlPersist 10m
   ControlMaster auto
   ControlPath /tmp/%r@%h:%p
