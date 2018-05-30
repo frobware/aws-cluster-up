@@ -57,8 +57,10 @@ I have these files GPG encrypted so my usage is as follows:
 
 	acu-launch ~/amcdermo-triage /usr/local/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.tf
 
-The basename of the output directory `~/amcdermo-triage` becomes the
-name of the cluster when viewed in the EC2 dashboard.
+The `basename` of the output directory `~/amcdermo-triage` becomes the
+name of the cluster when viewed in the EC2 dashboard. In this example
+you would have nodes named `acmdermo-triage-master`,
+`acmdermo-triage-infra` and `acmdermo-triage-node`.
 
 ## 3. Generate an OpenShift Ansible inventory file using `acu-generate-inventory(1)`.
 
@@ -96,21 +98,36 @@ requiring a password (assuming you have the correct key).
 
 	acu-destroy ~/amcdermo-triage
 
-# Creating your own cluster and ansible inventories
+This will automatically retag the instances names with `-terminate` so
+they get garbage collected.
+
+# Creating custom cluster definitions and ansible inventories
 
 The example terraform cluster definitions and inventory files are just
 examples. You can copy these and modify them to support a different
 set of configurations.
 
-	cp /usr/local/share/examples/aws/ocp-3.10/single-master.tf my-cluster.tf
+	#
+	# Take copies
+	#
+	cp /usr/local/share/examples/aws/ocp-3.10/single-master.tf ~/autoscale-group-cluster.tf
+	cp /usr/local/share/examples/aws/ocp-3.10/single-master.inventory ~/autoscale-group.inventory
 
-	# Make modificiations to my-cluster.tf
-	acu-launch ~/amcdermo-demo /path/to/my-cluster.tf
+	#
+	# Make modificiations, then launch based on the new configuration
+	#
+	acu-launch ~/amcdermo-ASG ~/autoscale-group.tf
 
-	cp /usr/local/share/examples/aws/ocp-3.10/single-master.inventory
+	#
+	# Make modificiations, then generate the inventory definition
+	#
+	acu-generate-inventory ~/amcdermo-ASG ~/autoscale-group.inventory
 
-	# Make modificiations to my-cluster.inventory
-	acu-generate-inventory ~/amcdermo-demo /path/to/my-cluster.inventory
+	#
+	# Run ansible playbooks
+	#
+	ansible-playbook -i ~/autoscale-group.inventory ~/openshift-ansible/playbooks/prerequisites.yml
+	ansible-playbook -i ~/autoscale-group.inventory ~/openshift-ansible/playbooks/deploy_cluster.yml
 
 The `acu-`scripts export pertinent information through environment
 variables that all begin with `ACU_`.
