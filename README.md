@@ -7,8 +7,7 @@ Define and deploy AWS infrastructure; generate OpenShift ansible inventories.
 	git clone https://github.com/frobware/aws-cluster-up.git
 	./bootstrap.sh
 	./configure
-	make
-	make install
+	sudo make install
 
 ## Dependencies
 
@@ -16,20 +15,38 @@ Define and deploy AWS infrastructure; generate OpenShift ansible inventories.
 
 # Usage
 
-### Setup default environment
+### Required Environment variables
 
-	source /usr/share/aws-cluster-up/examples/aws/us-east-1.env
+	source /usr/local/share/aws-cluster-up/examples/aws/us-east-1.env
+
+	cat <<EOF > ~/.oreg-credentials
+	export OREG_AUTH_USER=abc
+	export OREG_AUTH_PASSWORD=def
+	EOF
+
+	cat <<EOF > ~/.aws-credentials
+	export AWS_ACCESS_KEY=abc
+	export AWS_SECRET_KEY=def
+	EOF
+
+	source ~/.aws-credentials
+	source ~/.oreg-credentials
+
+I have these files GPG encrypted so my usage is as follows:
+
+	source <(less ~/.aws-credentials.gpg)
+	source <(less ~/.oreg-credentials.gpg)
 
 ### Define and provision a simple cluster that has one master, one infra and one node
 
-	acu-launch ~/amcdermo-triage /usr/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.tf
+	acu-launch ~/amcdermo-triage /usr/local/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.tf
 
 The basename of the output directory `~/amcdermo-triage` becomes the
 name of the cluster.
 
 ### Generate inventory based on deployed cluster
 
-	acu-generate-inventory ~/amcdermo-triage /usr/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.inventory > ~/amcdermo-triage/ocp.ini
+	acu-generate-inventory ~/amcdermo-triage /usr/local/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.inventory > ~/amcdermo-triage/ocp.ini
 
 ### Generate ssh/config based on deployed cluster
 
@@ -62,11 +79,11 @@ The example terraform cluster definitions and inventory files are just
 examples. You can copy these and modify them to support a different
 set of configurations.
 
-	cp /usr/share/share/examples/aws/ocp-3.10/single-master.tf my-cluster.tf
+	cp /usr/local/share/share/examples/aws/ocp-3.10/single-master.tf my-cluster.tf
 	# Make modificiations to my-cluster.tf
 	acu-launch ~/amcdermo-demo /path/to/my-cluster.tf
 
-	cp /usr/share/share/examples/aws/ocp-3.10/single-master.inventory
+	cp /usr/local/share/share/examples/aws/ocp-3.10/single-master.inventory
 	# Make modificiations to my-cluster.inventory
 	acu-generate-inventory ~/amcdermo-demo /path/to/my-cluster.inventory
 
