@@ -1,7 +1,5 @@
 $ACU_TOPDIR/../libexec/aws-cluster-up/self-check
 
-export ACU_SHARE_DIR=$ACU_TOPDIR/../share
-
 acu_die() {
     echo "error:" "$@"
     exit 1
