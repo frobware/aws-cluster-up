@@ -14,9 +14,9 @@ Define and deploy AWS infrastructure; generate OpenShift ansible inventories.
 
 Three external tools are required:
 
-1. sudo dnf install -y jq
-2. [AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
-3. [terraform](https://www.terraform.io/intro/getting-started/install.html)
+1. `sudo dnf install -y jq`
+2. `sudo dnf install -y awscli`
+3. [terraform](https://www.terraform.io/intro/getting-started/install.html#installing-terraform)
 
 # Usage
 
