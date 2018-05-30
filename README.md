@@ -17,7 +17,7 @@ Define and deploy AWS infrastructure; generate OpenShift ansible inventories.
 
 ### Required Environment variables
 
-	source /usr/local/share/aws-cluster-up/examples/aws/us-east-1.env
+	source /usr/local/share/aws-cluster-up/examples/aws/us-east-1.bash
 
 	cat <<EOF > ~/.oreg-credentials
 	export OREG_AUTH_USER=abc
