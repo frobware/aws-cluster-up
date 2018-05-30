@@ -2,8 +2,6 @@
 
 set -eu
 
-source ${ACU_SHARE_DIR:?}/defaults.bash
-
 cat <<EOF
 provider "aws" {
   region = "$ACU_REGION"
