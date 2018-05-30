@@ -25,10 +25,14 @@ fi
 declare -A ACU_INVENTORY_INSTANCE_IP
 
 for i in $(acu_get_instances "$ACU_CLUSTER_DIR/terraform/terraform.tfstate"); do
-    shortname=$(acu_aws_instance_nodename "$i")
-    ACU_INVENTORY_INSTANCE_IP[$shortname]=$(acu_get_public_ip "$i" "$ACU_CLUSTER_DIR/terraform/terraform.tfstate")
+    nodename=$(acu_aws_instance_nodename "$i")
+    ACU_INVENTORY_INSTANCE_IP[$nodename]=$(acu_get_public_ip "$i" "$ACU_CLUSTER_DIR/terraform/terraform.tfstate")
 done
 
 ACU_CLUSTER_NAME=$(basename ${ACU_CLUSTER_DIR})
-# Note: We cannot exec as Bash cannot export associative arrays.
+
+# Note: We cannot exec as Bash cannot export associative arrays (i.e.,
+# ACU_INVENTORY_INSTANCE_IP) and source'ing makes things a little
+# easier from a `make install` perspective.
+
 source $ACU_INVENTORY_SCRIPT
