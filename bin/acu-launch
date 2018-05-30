@@ -18,7 +18,7 @@ done
 shift $((OPTIND-1))
 
 if [[ $# -ne 2 ]]; then
-    acu_die "usage: $PROGNAME <cluster-dir> <terraform-script.tf>"
+    acu_die "usage: $PROGNAME <cluster-dir> <terraform-script>"
 fi
 
 export ACU_CLUSTER_DIR=$1; shift
@@ -32,14 +32,14 @@ if [[ ! -f "$ACU_TERRAFORM_SCRIPT" ]]; then
     acu_die "$ACU_TERRAFORM_SCRIPT does not exist!"
 fi
 
-if [[ ! -x "$ACU_TERRAFORM_SCRIPT" ]]; then
-    acu_die "$ACU_TERRAFORM_SCRIPT is not executable!"
-fi
+trap 'rm -rf $tmp_script_dir' EXIT
+tmp_script_dir=$(mktemp -t -d scriptXXXXXX)
+cp $ACU_TERRAFORM_SCRIPT $tmp_script_dir/x
 
 mkdir -p "$ACU_CLUSTER_DIR/terraform"
 
 # generate configuration
-${ACU_TERRAFORM_SCRIPT:?} > "$ACU_CLUSTER_DIR/terraform/cluster.tf"
+$tmp_script_dir/x > "$ACU_CLUSTER_DIR/terraform/cluster.tf"
 
 # Terraform's notion of where it is... is just not that great!
 tf() {
