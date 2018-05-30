@@ -5,19 +5,31 @@ Define and deploy AWS infrastructure; generate OpenShift ansible inventories.
 # Install
 
 	git clone https://github.com/frobware/aws-cluster-up.git
+	cd aws-cluster-up
 	./bootstrap.sh
 	./configure
 	sudo make install
 
 ## Dependencies
 
-	1. sudo dnf install -y jq
-	2. [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
-	3. [terraform](https://www.terraform.io/intro/getting-started/install.html)
+Three external tools are required:
+
+1. sudo dnf install -y jq
+2. [AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+3. [terraform](https://www.terraform.io/intro/getting-started/install.html)
 
 # Usage
 
-### Required Environment variables
+The general usage pattern is:
+
+1. Setup the environment
+2. Generate and provision a cluster using `acu-launch(1)`.
+3. Generate an OpenShift Ansible inventory file using `acu-generate-inventory(1)`.
+4. Generate an ssh configuration file using `acu-generate-ssh-config(1)`.
+5. Run the ansible playbooks against the deployed cluster
+6. Teardown the cluster using `acu-destroy(1)`.
+
+## 1. Setup the Environment
 
 	source /usr/local/share/aws-cluster-up/examples/aws/us-east-1.bash
 
@@ -41,18 +53,18 @@ I have these files GPG encrypted so my usage is as follows:
 	source <(less ~/.aws-credentials.gpg)
 	source <(less ~/.oreg-credentials.gpg)
 
-### Define and provision a simple 3 node cluster
+## 2. Generate and provision a cluster using `acu-launch(1)`.
 
 	acu-launch ~/amcdermo-triage /usr/local/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.tf
 
 The basename of the output directory `~/amcdermo-triage` becomes the
 name of the cluster when viewed in the EC2 dashboard.
 
-### Generate OpenShift Ansible inventory based on deployed cluster
+## 3. Generate an OpenShift Ansible inventory file using `acu-generate-inventory(1)`.
 
 	acu-generate-inventory ~/amcdermo-triage /usr/local/share/aws-cluster-up/examples/aws/ocp-3.10/single-master.inventory > ~/amcdermo-triage/ocp.ini
 
-### Generate ssh/config based on deployed cluster
+## 4. Generate an ssh configuration file using `acu-generate-ssh-config(1)`.
 
 	mkdir -p $HOME/.ssh/aws-cluster-up/conf.d
 	acu-generate-ssh-config ~/amcdermo-triage > ~/.ssh/conf.d/aws-cluster-up/amcdermo-triage.conf
@@ -71,7 +83,7 @@ Verify that tab completion works for the instances in your cluster:
 The generated ssh config entries should allow you to login without
 requiring a password (assuming you have the correct key).
 
-### Deploy OpenShift using openshift ansible
+## 5. Run the ansible playbooks against the deployed cluster
 
 	git clone https://github.com/openshift/openshift-ansible.git
 	cd ~/openshift-ansible
@@ -80,21 +92,23 @@ requiring a password (assuming you have the correct key).
 	ansible-playbook -i ~/amcdermo-triage/ocp.ini ~/openshift-ansible/playbooks/prerequisites.yml
 	ansible-playbook -i ~/amcdermo-triage/ocp.ini ~/openshift-ansible/playbooks/deploy_cluster.yml
 
-### Tear down cluster and tag node names with -terminate
+## 6. Teardown the cluster using `acu-destroy(1)`.
 
 	acu-destroy ~/amcdermo-triage
 
-# Extend the cluster definitions and the sample inventory files
+# Creating your own cluster and ansible inventories
 
 The example terraform cluster definitions and inventory files are just
 examples. You can copy these and modify them to support a different
 set of configurations.
 
 	cp /usr/local/share/examples/aws/ocp-3.10/single-master.tf my-cluster.tf
+
 	# Make modificiations to my-cluster.tf
 	acu-launch ~/amcdermo-demo /path/to/my-cluster.tf
 
 	cp /usr/local/share/examples/aws/ocp-3.10/single-master.inventory
+
 	# Make modificiations to my-cluster.inventory
 	acu-generate-inventory ~/amcdermo-demo /path/to/my-cluster.inventory
 
