@@ -42,21 +42,21 @@ openshift_master_bootstrap_enabled=true
 openshift_master_bootstrap_auto_approve=true
 
 [masters]
-${ACU_INVENTORY_INSTANCE_IP[master1]}
-${ACU_INVENTORY_INSTANCE_IP[master2]}
-${ACU_INVENTORY_INSTANCE_IP[master3]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master1]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master2]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master3]}
 
 [etcd]
-${ACU_INVENTORY_INSTANCE_IP[master1]}
-${ACU_INVENTORY_INSTANCE_IP[master2]}
-${ACU_INVENTORY_INSTANCE_IP[master3]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master1]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master2]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master3]}
 
 [nodes]
-${ACU_INVENTORY_INSTANCE_IP[master1]} openshift_node_group_name=node-config-master
-${ACU_INVENTORY_INSTANCE_IP[master2]} openshift_node_group_name=node-config-master
-${ACU_INVENTORY_INSTANCE_IP[master3]} openshift_node_group_name=node-config-master
-${ACU_INVENTORY_INSTANCE_IP[infra]} openshift_node_group_name=node-config-infra
-${ACU_INVENTORY_INSTANCE_IP[node1]} openshift_node_group_name=node-config-compute
-${ACU_INVENTORY_INSTANCE_IP[node2]} openshift_node_group_name=node-config-compute
-${ACU_INVENTORY_INSTANCE_IP[node3]} openshift_node_group_name=node-config-compute
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master1]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master2]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master3]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[infra]} openshift_node_group_name=node-config-infra
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[node1]} openshift_node_group_name=node-config-compute
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[node2]} openshift_node_group_name=node-config-compute
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[node3]} openshift_node_group_name=node-config-compute
 EOF

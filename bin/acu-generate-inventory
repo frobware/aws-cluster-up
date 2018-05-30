@@ -22,17 +22,17 @@ if [[ ! -f "$ACU_INVENTORY_SCRIPT" ]]; then
     acu_die "$ACU_INVENTORY_SCRIPT does not exist!"
 fi
 
-declare -A ACU_INVENTORY_INSTANCE_IP
+declare -A ACU_INVENTORY_INSTANCE_PUBLIC_IP
 
 for i in $(acu_get_instances "$ACU_CLUSTER_DIR/terraform/terraform.tfstate"); do
     nodename=$(acu_aws_instance_nodename "$i")
-    ACU_INVENTORY_INSTANCE_IP[$nodename]=$(acu_get_public_ip "$i" "$ACU_CLUSTER_DIR/terraform/terraform.tfstate")
+    ACU_INVENTORY_INSTANCE_PUBLIC_IP[$nodename]=$(acu_get_public_ip "$i" "$ACU_CLUSTER_DIR/terraform/terraform.tfstate")
 done
 
 ACU_CLUSTER_NAME=$(basename ${ACU_CLUSTER_DIR})
 
 # Note: We cannot exec as Bash cannot export associative arrays (i.e.,
-# ACU_INVENTORY_INSTANCE_IP) and source'ing makes things a little
+# ACU_INVENTORY_INSTANCE_PUBLIC_IP) and source'ing makes things a little
 # easier from a `make install` perspective.
 
 source $ACU_INVENTORY_SCRIPT

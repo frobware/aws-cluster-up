@@ -40,13 +40,13 @@ openshift_master_bootstrap_enabled=true
 openshift_master_bootstrap_auto_approve=true
 
 [masters]
-${ACU_INVENTORY_INSTANCE_IP[master]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]}
 
 [etcd]
-${ACU_INVENTORY_INSTANCE_IP[master]}
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]}
 
 [nodes]
-${ACU_INVENTORY_INSTANCE_IP[master]} openshift_node_group_name=node-config-master
-${ACU_INVENTORY_INSTANCE_IP[infra]} openshift_node_group_name=node-config-infra
-${ACU_INVENTORY_INSTANCE_IP[node]} openshift_node_group_name=node-config-compute
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[infra]} openshift_node_group_name=node-config-infra
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[node]} openshift_node_group_name=node-config-compute
 EOF
