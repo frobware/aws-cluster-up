@@ -35,6 +35,7 @@ fi
 trap 'rm -rf $tmp_script_dir' EXIT
 tmp_script_dir=$(mktemp -t -d scriptXXXXXX)
 cp $ACU_TERRAFORM_SCRIPT $tmp_script_dir/x
+chmod u+x $tmp_script_dir/x
 
 mkdir -p "$ACU_CLUSTER_DIR/terraform"
 
