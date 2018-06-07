@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+PROGNAME=$(basename $0)
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+if [[ $# -ne 1 ]]; then
+    echo "usage: $PROGNAME <cluster-dir>"
+    exit 1
+fi
+
+cluster_dir=$1; shift
+
+if [[ ! -d "$cluster_dir" ]]; then
+    acu_die "directory '$cluster_dir' does not exist!"
+fi
+
+cluster_name=$(basename $cluster_dir)
+
+for i in $(acu_get_instances "$cluster_dir/terraform/terraform.tfstate"); do
+    public_ip=$(acu_get_resource_attribute "$i" "public_ip" "$cluster_dir/terraform/terraform.tfstate")
+    echo $public_ip
+done

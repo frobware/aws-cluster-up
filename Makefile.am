@@ -3,11 +3,9 @@ EXTRA_DIST =					\
 	bootstrap.sh				\
 	libexec
 
-# Should really use $(program-prefix) for all the aws- entries but
-# that means the the pkglibexec_SCRIPTS also get changed.
-
 dist_bin_SCRIPTS =				\
 	bin/acu-destroy				\
+	bin/acu-generate-hosts			\
 	bin/acu-generate-inventory		\
 	bin/acu-generate-ssh-config		\
 	bin/acu-launch
