@@ -18,6 +18,8 @@ if [[ ! -d "$cluster_dir" ]]; then
     acu_die "directory '$cluster_dir' does not exist!"
 fi
 
+: ${ACU_CLOUD_SSH_USER:?}
+
 cluster_name=$(basename $cluster_dir)
 
 for i in $(acu_get_instances "$cluster_dir/terraform/terraform.tfstate"); do
@@ -29,7 +31,7 @@ Host ${cluster_name}-$(acu_aws_instance_nodename "$i") $public_ip # $private_dns
   ControlPersist 10m
   ControlMaster auto
   ControlPath /tmp/%r@%h:%p
-  User ${ANSIBLE_SSH_USER:-ec2-user}
+  User ${ACU_CLOUD_SSH_USER:-ec2-user}
   StrictHostKeyChecking no
   PasswordAuthentication no
   UserKnownHostsFile ~/.ssh/aws_known_hosts
