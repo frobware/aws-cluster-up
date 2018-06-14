@@ -2,7 +2,11 @@
 
 # Infrastructure that will be Auto Scale Group aware.
 
-set -u
+set -eu
+
+: ${ACU_AMI_IMAGE_INFRA:=ami-0af8ebba55e71b379}
+: ${ACU_AMI_IMAGE_MASTER:=ami-0af8ebba55e71b379}
+: ${ACU_AMI_IMAGE_NODE:=ami-0af8ebba55e71b379}
 
 cat <<EOF
 provider "aws" {
