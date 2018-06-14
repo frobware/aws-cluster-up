@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -u
+
+cat <<EOF
+[OSEv3:children]
+masters
+etcd
+nodes
+
+[OSEv3:vars]
+ansible_ssh_user=${ACU_CLOUD_SSH_USER:-ec2-user}
+ansible_become=yes
+deployment_type=openshift-enterprise
+
+openshift_enable_service_catalog=false
+template_service_broker_install=false
+osm_use_cockpit=false
+openshift_enable_excluders=false
+openshift_hosted_manage_registry_console=false
+osn_storage_plugin_deps=[]
+openshift_disable_check=memory_availability,disk_availability,package_availability,package_version,docker_image_availability,docker_storage
+
+openshift_install_examples=true
+openshift_portal_net=172.30.0.0/16
+
+openshift_docker_additional_registries=registry.reg-aws.openshift.com
+oreg_url="registry.reg-aws.openshift.com/openshift3/ose-\${component}:\${version}"
+oreg_auth_user=$(printf "%q" ${OREG_AUTH_USER:-unused})
+oreg_auth_password=${OREG_AUTH_PASSWORD:-}
+
+openshift_cloudprovider_kind=aws
+openshift_cloudprovider_aws_access_key=${AWS_ACCESS_KEY:?}
+openshift_cloudprovider_aws_secret_key=${AWS_SECRET_KEY:?}
+
+openshift_cluster_autoscaler_aws_key=${AWS_ACCESS_KEY:?}
+openshift_cluster_autoscaler_aws_secret_key=${AWS_SECRET_KEY:?}
+openshift_cluster_autoscaler_cloud_provider=aws
+
+openshift_clusterid=$ACU_CLUSTER_NAME
+
+openshift_additional_repos=[{'id': 'ose', 'name': 'ose', 'baseurl': 'https://mirror.openshift.com/enterprise/all/3.10/latest/RH7-RHAOS-3.10/x86_64/os/', 'enabled': 1, 'gpgcheck': 0, 'sslclientcert': '/var/lib/yum/client-cert.pem', 'sslclientkey': '/var/lib/yum/client-key.pem', 'sslverify': 0}]
+
+openshift_master_bootstrap_enabled=true
+openshift_master_bootstrap_auto_approve=true
+
+[masters]
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]}
+
+[etcd]
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]}
+
+[nodes]
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]} openshift_node_group_name=node-config-master
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[infra]} openshift_node_group_name=node-config-infra
+${ACU_INVENTORY_INSTANCE_PUBLIC_IP[node]} openshift_node_group_name=node-config-compute
+EOF
