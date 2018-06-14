@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -eu
+
+function acu_dwim() {
+    if [[ $# -ne 3 ]]; then
+	echo "usage: <cluster-dir> <terraform-script> <inventory-script>"
+	return 1
+    fi
+
+    if [[ -z "${ACU_REGION:-}" ]]; then
+    	echo "ACU_REGION is not set; sourcing default environment"
+    	if [[ -f /usr/local/share/aws-cluster-up/examples/aws/us-east-1.bash ]]; then
+    	    source /usr/local/share/aws-cluster-up/examples/aws/us-east-1.bash
+    	elif [[ -f /usr/share/aws-cluster-up/examples/aws/us-east-1.bash ]]; then
+    	    source /usr/share/aws-cluster-up/examples/aws/us-east-1.bash
+    	fi
+    fi
+
+    if [[ -f  ~/.aws-credentials.gpg ]]; then
+	source <(less ~/.aws-credentials.gpg)
+    elif [[ -f  ~/.aws-credentials ]]; then
+	source <(less ~/.aws-credentials)
+    fi
+
+    if [[ -f  ~/.oreg-credentials.gpg ]]; then
+	source <(less ~/.oreg-credentials.gpg)
+    elif [[ -f  ~/.oreg-credentials ]]; then
+	source <(less ~/.oreg-credentials)
+    fi
+
+    local cluster_dir=$1; shift
+    local terraform_script=$1; shift
+    local inventory_script=$1; shift
+
+    if [[ -d "$cluster_dir" ]]; then
+	echo "cluster already provisioned at $cluster_dir"
+    else
+	acu-launch "$cluster_dir" "$terraform_script"
+    fi
+
+    echo "Generating $cluster_dir/inventory"
+    acu-generate-inventory ${cluster_dir} $inventory_script > ${cluster_dir}/inventory
+
+    echo "Generating $cluster_dir/hosts"
+    acu-generate-hosts ${cluster_dir} > ${cluster_dir}/hosts
+
+    echo "Generating $HOME/.ssh/conf.d/aws-cluster-up/$(basename ${cluster_dir}).conf"
+    acu-generate-ssh-config ${cluster_dir} > $HOME/.ssh/conf.d/aws-cluster-up/$(basename ${cluster_dir}).conf
+    chmod 600 $HOME/.ssh/conf.d/aws-cluster-up/$(basename ${cluster_dir}).conf
+}
+
+: ${ACU_CLOUD_SSH_USER:?}
+
+acu_dwim "$@"
