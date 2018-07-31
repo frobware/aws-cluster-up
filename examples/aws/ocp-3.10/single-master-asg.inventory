@@ -30,11 +30,11 @@ oreg_auth_user=$(printf "%q" ${OREG_AUTH_USER:-unused})
 oreg_auth_password=${OREG_AUTH_PASSWORD:-}
 
 openshift_cloudprovider_kind=aws
-openshift_cloudprovider_aws_access_key=${AWS_ACCESS_KEY:?}
-openshift_cloudprovider_aws_secret_key=${AWS_SECRET_KEY:?}
+openshift_cloudprovider_aws_access_key=${AWS_ACCESS_KEY_ID:?}
+openshift_cloudprovider_aws_secret_key=${AWS_SECRET_ACCESS_KEY:?}
 
-openshift_cluster_autoscaler_aws_key=${AWS_ACCESS_KEY:?}
-openshift_cluster_autoscaler_aws_secret_key=${AWS_SECRET_KEY:?}
+openshift_cluster_autoscaler_aws_key=${AWS_ACCESS_KEY_ID:?}
+openshift_cluster_autoscaler_aws_secret_key=${AWS_SECRET_ACCESS_KEY:?}
 openshift_cluster_autoscaler_cloud_provider=aws
 
 openshift_clusterid=$ACU_CLUSTER_NAME

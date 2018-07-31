@@ -49,8 +49,8 @@ export OREG_AUTH_PASSWORD=def
 EOF
 
 cat <<EOF > ~/.aws-credentials
-export AWS_ACCESS_KEY=abc
-export AWS_SECRET_KEY=def
+export AWS_ACCESS_KEY_ID=abc
+export AWS_SECRET_ACCESS_KEY=def
 EOF
 ```
 

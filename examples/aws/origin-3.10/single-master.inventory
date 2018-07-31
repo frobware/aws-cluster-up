@@ -27,8 +27,8 @@ openshift_install_examples=true
 openshift_portal_net=172.30.0.0/16
 
 openshift_cloudprovider_kind=aws
-openshift_cloudprovider_aws_access_key=${AWS_ACCESS_KEY:?}
-openshift_cloudprovider_aws_secret_key=${AWS_SECRET_KEY:?}
+openshift_cloudprovider_aws_access_key=${AWS_ACCESS_KEY_ID:?}
+openshift_cloudprovider_aws_secret_key=${AWS_SECRET_ACCESS_KEY:?}
 openshift_clusterid=$ACU_CLUSTER_NAME
 
 openshift_additional_repos=[{'id': 'origin', 'name': 'origin', 'baseurl': '$repourl', 'enabled': 1, 'gpgcheck': 0, 'sslclientcert': '/var/lib/yum/client-cert.pem', 'sslclientkey': '/var/lib/yum/client-key.pem', 'sslverify': 0}]
