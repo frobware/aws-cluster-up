@@ -19,6 +19,8 @@ nobase_dist_pkgdata_DATA =				\
 	examples/aws/ocp-3.10/single-master-asg.tf	\
 	examples/aws/ocp-3.10/single-master.inventory	\
 	examples/aws/ocp-3.10/single-master.tf		\
+	examples/aws/ocp-3.11/single-master.inventory	\
+	examples/aws/ocp-3.11/single-master.tf		\
 	examples/aws/us-east-1.bash
 
 pkglibexec_SCRIPTS =				\
