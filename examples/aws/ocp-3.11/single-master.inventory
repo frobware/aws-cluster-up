@@ -39,7 +39,7 @@ openshift_additional_repos=[{'id': 'ose', 'name': 'ose', 'baseurl': 'https://mir
 openshift_master_bootstrap_enabled=true
 openshift_master_bootstrap_auto_approve=true
 
-aopenshift_release="3.11"
+openshift_release="3.11"
 
 [masters]
 ${ACU_INVENTORY_INSTANCE_PUBLIC_IP[master]}
