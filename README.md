@@ -145,7 +145,7 @@ cp /usr/local/share/examples/aws/ocp-3.10/single-master.tf ~/autoscale-group.tf
 cp /usr/local/share/examples/aws/ocp-3.10/single-master.inventory ~/autoscale-group.inventory
 
 #
-# Make modificiations, then launch based on the new configuration
+# Make modifications, then launch based on the new configuration
 #
 acu-launch ~/amcdermo-ASG ~/autoscale-group.tf
 
