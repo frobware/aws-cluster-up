@@ -36,7 +36,6 @@ openshift_clusterid=$ACU_CLUSTER_NAME
 
 openshift_additional_repos=[{'id': 'ose', 'name': 'ose', 'baseurl': 'https://mirror.openshift.com/enterprise/all/3.11/latest/RH7-RHAOS-3.11/x86_64/os/', 'enabled': 1, 'gpgcheck': 0, 'sslclientcert': '/var/lib/yum/client-cert.pem', 'sslclientkey': '/var/lib/yum/client-key.pem', 'sslverify': 0}]
 
-openshift_master_bootstrap_enabled=true
 openshift_master_bootstrap_auto_approve=true
 
 openshift_release="3.11"
