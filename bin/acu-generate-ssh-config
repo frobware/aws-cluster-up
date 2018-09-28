@@ -28,9 +28,6 @@ for i in $(acu_get_instances "$cluster_dir/terraform/terraform.tfstate"); do
 cat <<EOF
 Host ${cluster_name}-$(acu_aws_instance_nodename "$i") $public_ip # $private_dns
   Hostname $public_ip
-  ControlPersist 10m
-  ControlMaster auto
-  ControlPath /tmp/%r@%h:%p
   User ${ACU_CLOUD_SSH_USER:-ec2-user}
   StrictHostKeyChecking no
   PasswordAuthentication no
