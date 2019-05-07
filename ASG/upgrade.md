@@ -38,7 +38,7 @@ nodes=$(aws ec2 describe-instances --instance-ids ${instances:?error: zero insta
 - Cordon nodes to prevent any further scheduling
 
 ```bash
-for i in $nodes; do echo oc adm cordon $i; done | sh
+for i in $nodes; do oc adm cordon $i; done
 ```
 
 - Bump the capacity of the new ASG - this could be set to the min/max of the old ASG + some headroom. **Must** wait until new nodes become `Ready`.
@@ -54,7 +54,7 @@ the procedure batched) so that the existing workload has time to start
 afresh on the new node.
 
 ```bash
-for i in $nodes; do echo oc adm drain $i --delete-local-data=true --ignore-daemonsets=true; done | sh
+for i in $nodes; do oc adm drain $i --delete-local-data=true --ignore-daemonsets=true; done
 ```
 
 - Once all PODs have migrated we can delete all the old nodes by scaling the outgoing ASG to 0
