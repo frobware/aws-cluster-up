@@ -20,7 +20,7 @@ NEW_ASG_NAME=amcdermo-asg311-ASG-1
 - Scale down the autoscaler deployment so that no new further autoscaling takes place:
 
 ```bash
-kubectl scale deployment -n openshift-autoscaler --replicas=0 cluster-autoscaler
+oc scale deployment -n openshift-autoscaler --replicas=0 cluster-autoscaler
 ```
 
 - Find all instances in existing ASG
@@ -66,7 +66,7 @@ aws autoscaling update-auto-scaling-group --auto-scaling-group-name $CUR_ASG_NAM
 - Update the cluster-autoscaler to reference the new ASG/LC
 
 ```bash
-kubectl edit deployment -n openshift-autoscaler cluster-autoscaler
+oc edit deployment -n openshift-autoscaler cluster-autoscaler
 ```
 
 And replace the line that has the old ASG with the new ASG:
@@ -76,7 +76,7 @@ And replace the line that has the old ASG with the new ASG:
 - Scale autoscaler deployment back up
 
 ```bash
-kubectl scale deployment -n openshift-autoscaler --replicas=1 cluster-autoscaler
+oc scale deployment -n openshift-autoscaler --replicas=1 cluster-autoscaler
 ```
 
 - Reset min/max for ongoing autoscaling
