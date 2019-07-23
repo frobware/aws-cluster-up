@@ -27,6 +27,7 @@ openshift_portal_net=172.30.0.0/16
 openshift_docker_additional_registries=registry.reg-aws.openshift.com
 oreg_url="registry.reg-aws.openshift.com/openshift3/ose-\${component}:\${version}"
 oreg_auth_user=$(printf "%q" ${OREG_AUTH_USER:-unused})
+# Get the password from here: https://api.reg-aws.openshift.com
 oreg_auth_password=${OREG_AUTH_PASSWORD:-}
 
 openshift_cloudprovider_kind=aws
