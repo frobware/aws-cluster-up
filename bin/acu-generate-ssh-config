@@ -32,7 +32,7 @@ Host ${cluster_name}-$(acu_aws_instance_nodename "$i") $public_ip # $private_dns
   StrictHostKeyChecking no
   PasswordAuthentication no
   UserKnownHostsFile ~/.ssh/aws_known_hosts
-  IdentityFile ~/.ssh/libra.pem
+  IdentityFile ~/.ssh/openshift-dev.pem
   IdentitiesOnly yes
   Compression yes
 EOF
