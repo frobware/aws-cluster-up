@@ -18,6 +18,9 @@ Three external tools are required:
 - `sudo dnf install -y awscli`
 - [terraform](https://www.terraform.io/intro/getting-started/install.html#installing-terraform)
 
+Note: terraform - version 0.11.14 last known version to work with the
+`jq` scripts that parse `terraform.tfstate`.
+
 # Usage
 
 The general usage pattern is:
