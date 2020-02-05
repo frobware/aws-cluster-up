@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+set -eu
+set -o pipefail
+
+set -a
+PROGNAME=$(basename $0)
+ACU_TOPDIR="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd -P)"
+source $ACU_TOPDIR/../libexec/aws-cluster-up/common.bash
+
+exec bash
